@@ -5,13 +5,21 @@ import requests
 from Controller import API_BASE_URL
 from Controller import JSONKeys
 from Util import Printing
+from Controller import DBInterface
 
 
 class JSONInterface(object):
 	"""This interface assists in retrieving all the information from the API"""
 
 	#The Next Change ID for getting the next payload
-	nextChangeID = None
+	try:
+		nextChangeID = DBInterface.getNextChangeID()
+		Printing.INFOPRINT("Retrieved NextChangeID {} from Database.".format(nextChangeID))
+	except:
+		nextChangeID = None
+		Printing.INFOPRINT("Unable to retrieve NextChangeID from Database...")
+
+	#Did we get a duplicate and should wait?
 	duplicateNextChangeID = False
 
 	@staticmethod
@@ -49,6 +57,9 @@ class JSONInterface(object):
 		duplicateNextChangeID = (nextChangeID == JSONInterface.nextChangeID)
 		JSONInterface.duplicateNextChangeID = duplicateNextChangeID
 		JSONInterface.nextChangeID = nextChangeID
+
+		#Update the Database
+		DBInterface.setNextChangeID(nextChangeID)
 
 		#And return the stashes
 		stashes = responseJSON[JSONKeys.STASHES]

@@ -46,8 +46,8 @@ class JSONKeys(object):
 
 class DatabaseKeys(object):
 	#The latest ID and when it was requested
-	LATEST_NEXT_CHANGE_ID = 'latestNextChangeID'
-	LATEST_NEXT_CHANGE_ID_TIMESTAMP = 'latestNextChangeIDTimestamp'
+	NEXT_CHANGE_ID = 'nextChangeID'
+	NEXT_CHANGE_ID_TIMESTAMP = 'nextChangeIDTimestamp'
 
 	#For an account
 	ACCOUNTS = 'accounts'
@@ -74,4 +74,6 @@ class DatabaseKeys(object):
 	ITEM_DESCRIPTION = 'itemDescription'
 	#</editor-fold">
 
-	LAST_WRITE = 'lastWrite'
+	DATABASE_NAME = 'POEGet'
+	ITEM_COLLECTION = 'items'
+	METADATA_COLLECTION = 'metadata'

@@ -64,6 +64,9 @@ class POEGetController(object):
 		#We're out of the loop, meaning we were told to stop going.
 		return
 
+	def _updateDatabase(self, stashes):
+		pass
+
 	def _updateModel(self, stashes):
 		"""Update the model with some amount of stash information"""
 		Printing.INFOPRINT("Updating Model with new Payload")
@@ -98,7 +101,7 @@ class POEGetController(object):
 		stashTab = accountStash.tabs.get(stashTabID, None)
 		if not stashTab:
 			Printing.INFOPRINT("Adding new Stash Tab with ID: {}".format(stashTabID))
-			stashTab = StashTab(accountStash, stashTabID, stashTabName, public)
+			stashTab = StashTab(accountStash, stashTabID, stashTabName)
 
 		#Now we have a stash. Let's add it's items
 		for item in items:
