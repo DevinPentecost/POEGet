@@ -42,3 +42,36 @@ class JSONKeys(object):
 	WIDTH = "w"
 	X_POSITION = "x"
 	Y_POSITION = "y"
+
+
+class DatabaseKeys(object):
+	#The latest ID and when it was requested
+	LATEST_NEXT_CHANGE_ID = 'latestNextChangeID'
+	LATEST_NEXT_CHANGE_ID_TIMESTAMP = 'latestNextChangeIDTimestamp'
+
+	#For an account
+	ACCOUNTS = 'accounts'
+	ACCOUNT_NAME = 'accountName'
+	ACCOUNT_LATEST_CHARACTER_NAME = 'accountLatestCharacterName'
+
+	#For a stash
+	ACCOUNT_STASH = 'accountStash'
+
+	#For Tabs
+	STASH_TABS = 'stashTabs'
+	STASH_TAB_ID = 'stashTabID'
+	STASH_TAB_NAME = 'stashTabName'
+
+	#For items
+	ITEMS = 'stashTabItems'
+	#<editor-fold desc="Item">
+	ITEM_NAME = 'itemName'
+	ITEM_ID = 'itemID'
+	ITEM_TYPE_LINE = 'itemTypeLine'
+	ITEM_NOTE = 'itemNote'
+	ITEM_ICON_URL = 'iconURL'
+	ITEM_LEAGUE = 'itemLeague'
+	ITEM_DESCRIPTION = 'itemDescription'
+	#</editor-fold">
+
+	LAST_WRITE = 'lastWrite'

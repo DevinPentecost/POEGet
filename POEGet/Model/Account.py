@@ -1,9 +1,12 @@
 __author__ = 'Devin'
 
+from json import JSONEncoder
+
 from Model.Stash import Stash
+from Controller import DatabaseKeys
 
 
-class Account(object):
+class Account(JSONEncoder):
 	#A particular account that can own tabs
 	def __init__(self, accountName, lastCharacterName):
 		#Just store this stuff
@@ -16,6 +19,7 @@ class Account(object):
 	'''
 	PROPERTIES
 	'''
+	#TODO: Use proper region
 
 	@property
 	def accountName(self):
@@ -36,3 +40,14 @@ class Account(object):
 	def stash(self):
 		"""Get the account's last character name"""
 		return self._stash
+
+	def default(self, o):
+		#Build it
+		jsonDict = {
+			DatabaseKeys.ACCOUNT_NAME: self.accountName,
+			DatabaseKeys.ACCOUNT_LATEST_CHARACTER_NAME: self.lastCharacterName,
+			DatabaseKeys.ACCOUNT_STASH: self.stash,
+		}
+
+		#And return it
+		return jsonDict

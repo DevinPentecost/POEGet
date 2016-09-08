@@ -1,7 +1,11 @@
 __author__ = 'Devin'
 
+from json import JSONEncoder
 
-class Stash(object):
+from Controller import DatabaseKeys
+
+
+class Stash(JSONEncoder):
 	"""A Stash is owned by an account and has any number of tabs"""
 
 	def __init__(self, parentAccount):
@@ -24,3 +28,12 @@ class Stash(object):
 	def tabs(self):
 		"""Get the tabs in the stash"""
 		return self._tabs
+
+	def default(self, o):
+		#Build the dictionary
+		jsonDictionary = {
+			DatabaseKeys.STASH_TABS: self.tabs,
+		}
+
+		#And return
+		return jsonDictionary

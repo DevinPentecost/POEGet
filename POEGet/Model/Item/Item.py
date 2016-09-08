@@ -1,9 +1,12 @@
 __author__ = 'Devin'
 
+from json import JSONEncoder
+
 from Model import DEFAULT_LEAGUE
+from Controller import DatabaseKeys
 
 
-class Item(object):
+class Item(JSONEncoder):
 	#This is just the base class for an item
 	def __init__(self, parentStashTab, name, itemID, typeLine, note, iconURL, league=DEFAULT_LEAGUE, description=None):
 		#Let's get all that information stored
@@ -59,4 +62,19 @@ class Item(object):
 		"""The description of this item"""
 		return self._description
 
-#</editor-fold>
+	#</editor-fold>
+
+	def default(self, o):
+		#Build the dictionary
+		jsonDictionary = {
+			DatabaseKeys.ITEM_NAME: self.name,
+			DatabaseKeys.ITEM_ID: self.itemID,
+			DatabaseKeys.ITEM_TYPE_LINE: self.typeLine,
+			DatabaseKeys.ITEM_NOTE: self.note,
+			DatabaseKeys.ITEM_ICON_URL: self.iconURL,
+			DatabaseKeys.ITEM_LEAGUE: self.league,
+			DatabaseKeys.ITEM_DESCRIPTION: self.description,
+		}
+
+		#And return it
+		return jsonDictionary
