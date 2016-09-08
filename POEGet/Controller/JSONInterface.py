@@ -47,6 +47,7 @@ class JSONInterface(object):
 		Printing.DEBUGPRINT("Requesting at URL: {}".format(requestURL))
 		response = requests.get(requestURL)
 		Printing.INFOPRINT("Request Complete.")
+
 		#Retrieve the JSON from it
 		responseJSON = response.json()
 

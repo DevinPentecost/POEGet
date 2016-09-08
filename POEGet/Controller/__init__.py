@@ -1,6 +1,7 @@
 __author__ = 'Devin'
 
 API_BASE_URL = 'http://www.pathofexile.com/api/public-stash-tabs'
+DATABASE_URI = 'mongodb://dorblin7z7:thisispassword@ds019936.mlab.com:19936/heroku_t80mf1rd'
 
 #The time to wait if we get a duplicate change id in seconds
 CHANGE_ID_WAIT_TIME = 5
@@ -74,6 +75,6 @@ class DatabaseKeys(object):
 	ITEM_DESCRIPTION = 'itemDescription'
 	#</editor-fold">
 
-	DATABASE_NAME = 'POEGet'
+	DATABASE_NAME = 'heroku_t80mf1rd'  #'POEGet'
 	ITEM_COLLECTION = 'items'
 	METADATA_COLLECTION = 'metadata'

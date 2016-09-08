@@ -4,23 +4,38 @@ import time
 
 from pymongo import MongoClient
 
-from Controller import DatabaseKeys
+from Controller import DatabaseKeys, DATABASE_URI
 
 """This class handles interactions with the Mongo Database"""
 #We want to establish our connection
 #TODO: Move the DB onto the network or whatever?
-_client = MongoClient()
+_client = MongoClient(DATABASE_URI)
 _database = _client[DatabaseKeys.DATABASE_NAME]
+_metadata = _database[DatabaseKeys.METADATA_COLLECTION].find_one()
 
 
 def _getMetadata():
 	"""Get the metadata object from the database"""
-	return _database[DatabaseKeys.METADATA_COLLECTION].find_one()
+	return _metadata
 
 
 def _setMetadata(metadata):
+	global _metadata
 	"""Update the Metadata with the new information"""
-	_database[DatabaseKeys.METADATA_COLLECTION].insert_one(metadata)
+	#Did we have an old one?
+	if _metadata:
+		_database[DatabaseKeys.METADATA_COLLECTION].update_one(
+			{
+				'_id': _metadata['_id'],
+			},
+			{
+				'$set': metadata,
+			},
+		)
+	else:
+		#We need to instead set that value
+		_database[DatabaseKeys.METADATA_COLLECTION].insert_one(metadata)
+		_metadata = _database[DatabaseKeys.METADATA_COLLECTION].find_one()
 
 
 def getNextChangeID():
