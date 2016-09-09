@@ -1,7 +1,7 @@
 __author__ = 'Devin'
 
-from Controller import DatabaseKeys
-from Model.DBObject import DBObject
+from POEGet.Controller import DatabaseKeys
+from POEGet.Model.DBObject import DBObject
 
 
 class StashTab(DBObject):

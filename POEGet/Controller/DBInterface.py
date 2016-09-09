@@ -3,9 +3,8 @@ __author__ = 'Devin'
 import time
 
 from pymongo import MongoClient
-
-from Controller import DatabaseKeys, DATABASE_URI
-from Util import Printing
+from POEGet.Controller import DatabaseKeys, DATABASE_URI
+from POEGet.Util import Printing
 
 """This class handles interactions with the Mongo Database"""
 #We want to establish our connection

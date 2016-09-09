@@ -1,7 +1,8 @@
 __author__ = 'Devin'
 
-import abc
 from json import JSONEncoder
+
+import abc
 
 """
 This is just an interface to say that an object is capable of being put into our database

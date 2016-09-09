@@ -1,9 +1,8 @@
 __author__ = 'Devin'
 
-from Model import DEFAULT_LEAGUE
-from Model.DBObject import DBObject
-from Controller import DatabaseKeys
-
+from POEGet.Model import DEFAULT_LEAGUE
+from POEGet.Model.DBObject import DBObject
+from POEGet.Controller import DatabaseKeys
 
 class BaseItem(DBObject):
 	#This is just the base class for an item

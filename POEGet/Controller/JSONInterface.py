@@ -2,10 +2,10 @@ __author__ = 'Devin'
 
 import requests
 
-from Controller import API_BASE_URL
-from Controller import JSONKeys
-from Util import Printing
-from Controller import DBInterface
+from POEGet.Controller import API_BASE_URL
+from POEGet.Controller import JSONKeys
+from POEGet.Util import Printing
+from POEGet.Controller import DBInterface
 
 
 class JSONInterface(object):

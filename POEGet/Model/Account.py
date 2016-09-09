@@ -1,8 +1,8 @@
 __author__ = 'Devin'
 
-from Model.Stash import Stash
-from Controller import DatabaseKeys
-from Model.DBObject import DBObject
+from POEGet.Model.Stash import Stash
+from POEGet.Controller import DatabaseKeys
+from POEGet.Model.DBObject import DBObject
 
 
 class Account(DBObject):

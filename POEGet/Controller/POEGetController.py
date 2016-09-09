@@ -3,15 +3,15 @@ __author__ = 'Devin'
 import threading
 import time
 
-from Util import Printing, CLEAN_STRING
-from Controller.JSONInterface import JSONInterface
-from Controller import CHANGE_ID_WAIT_TIME, REQUEST_FAIL_WAIT_TIME
-from Controller import JSONKeys
-from Controller import DBInterface
-from Model.Account import Account
-from Model.StashTab import StashTab
-from Model import DEFAULT_LEAGUE
-from Model.Item.BaseItem import BaseItem
+from POEGet.Util import Printing, CLEAN_STRING
+from POEGet.Controller.JSONInterface import JSONInterface
+from POEGet.Controller import CHANGE_ID_WAIT_TIME, REQUEST_FAIL_WAIT_TIME
+from POEGet.Controller import JSONKeys
+from POEGet.Controller import DBInterface
+from POEGet.Model.Account import Account
+from POEGet.Model.StashTab import StashTab
+from POEGet.Model import DEFAULT_LEAGUE
+from POEGet.Model.Item.BaseItem import BaseItem
 
 
 class POEGetController(object):
