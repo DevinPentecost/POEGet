@@ -1,1 +1,1 @@
-databasehandler: python ./POEGet/Controller/POEGet.py
+databasehandler: ./env/Scripts/python.exe ./POEGet/Controller/POEGet.py
