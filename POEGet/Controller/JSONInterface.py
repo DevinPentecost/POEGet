@@ -15,7 +15,7 @@ class JSONInterface(object):
 	try:
 		nextChangeID = DBInterface.getNextChangeID()
 		Printing.INFOPRINT("Retrieved NextChangeID {} from Database.".format(nextChangeID))
-	except:
+	except TypeError:
 		nextChangeID = None
 		Printing.INFOPRINT("Unable to retrieve NextChangeID from Database...")
 
@@ -49,19 +49,23 @@ class JSONInterface(object):
 		Printing.INFOPRINT("Request Complete.")
 
 		#Retrieve the JSON from it
-		responseJSON = response.json()
+		try:
+			responseJSON = response.json()
 
-		#Get the next change ID
-		nextChangeID = responseJSON[JSONKeys.NEXT_CHANGE_ID]
+			#Get the next change ID
+			nextChangeID = responseJSON[JSONKeys.NEXT_CHANGE_ID]
 
-		#Did it match the old one? Set the flag to be so
-		duplicateNextChangeID = (nextChangeID == JSONInterface.nextChangeID)
-		JSONInterface.duplicateNextChangeID = duplicateNextChangeID
-		JSONInterface.nextChangeID = nextChangeID
+			#Did it match the old one? Set the flag to be so
+			duplicateNextChangeID = (nextChangeID == JSONInterface.nextChangeID)
+			JSONInterface.duplicateNextChangeID = duplicateNextChangeID
+			JSONInterface.nextChangeID = nextChangeID
 
-		#Update the Database
-		DBInterface.setNextChangeID(nextChangeID)
+			#Update the Database
+			DBInterface.setNextChangeID(nextChangeID)
 
-		#And return the stashes
-		stashes = responseJSON[JSONKeys.STASHES]
-		return stashes
+			#And return the stashes
+			stashes = responseJSON[JSONKeys.STASHES]
+			return stashes
+		except:
+			#Unable to get the json. We'll try again later
+			return None

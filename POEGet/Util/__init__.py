@@ -1,10 +1,12 @@
 __author__ = 'Devin'
 
+import unicodedata
+
 DEBUG_ENABLED = True
 
 
 def CLEAN_STRING(string):
 	try:
-		return string.encode('utf-8')
-	except:
+		return unicodedata.normalize('NFKD', string)
+	except Exception:
 		return None

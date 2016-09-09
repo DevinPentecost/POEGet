@@ -1,11 +1,10 @@
 __author__ = 'Devin'
 
-from json import JSONEncoder
-
 from Controller import DatabaseKeys
+from Model.DBObject import DBObject
 
 
-class StashTab(JSONEncoder):
+class StashTab(DBObject):
 	#A particular tab belonging in a stash
 	def __init__(self, parentStash, stashTabID, name):
 		#Store the information
@@ -40,9 +39,22 @@ class StashTab(JSONEncoder):
 		#Build it
 		jsonDictionary = {
 			DatabaseKeys.STASH_TAB_ID: self.stashID,
+			DatabaseKeys.ACCOUNT_NAME: self.parentStash.parentAccount.accountName,
 			DatabaseKeys.STASH_TAB_NAME: self.stashName,
 			DatabaseKeys.ITEMS: self.items,
 		}
 
 		#And return it
 		return jsonDictionary
+
+	def toDatabaseDictionary(self):
+		#Build the dictionary
+		dictionary = {
+			DatabaseKeys.STASH_TAB_ID: self.stashID,
+			DatabaseKeys.STASH_TAB_NAME: self.stashName,
+			DatabaseKeys.ACCOUNT_NAME: self.parentStash.parentAccount.accountName,
+			DatabaseKeys.STASH_TAB_ITEMS: [],
+		}
+
+		#And return it
+		return dictionary

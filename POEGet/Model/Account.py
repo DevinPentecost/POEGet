@@ -1,12 +1,11 @@
 __author__ = 'Devin'
 
-from json import JSONEncoder
-
 from Model.Stash import Stash
 from Controller import DatabaseKeys
+from Model.DBObject import DBObject
 
 
-class Account(JSONEncoder):
+class Account(DBObject):
 	#A particular account that can own tabs
 	def __init__(self, accountName, lastCharacterName):
 		#Just store this stuff
@@ -51,3 +50,14 @@ class Account(JSONEncoder):
 
 		#And return it
 		return jsonDict
+
+	def toDatabaseDictionary(self):
+		#Build the dictionary
+		dictionary = {
+			DatabaseKeys.ACCOUNT_NAME: self.accountName,
+			DatabaseKeys.ACCOUNT_LATEST_CHARACTER_NAME: self.lastCharacterName,
+			DatabaseKeys.ACCOUNT_STASH_TABS: [stashTabID for stashTabID in self.stash.tabs],
+		}
+
+		#And return it
+		return dictionary

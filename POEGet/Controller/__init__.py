@@ -6,6 +6,9 @@ DATABASE_URI = 'mongodb://dorblin7z7:thisispassword@ds019936.mlab.com:19936/hero
 #The time to wait if we get a duplicate change id in seconds
 CHANGE_ID_WAIT_TIME = 5
 
+#How long to wait if we fail
+REQUEST_FAIL_WAIT_TIME = 120
+
 
 class JSONKeys(object):
 	#Top-Level
@@ -56,7 +59,7 @@ class DatabaseKeys(object):
 	ACCOUNT_LATEST_CHARACTER_NAME = 'accountLatestCharacterName'
 
 	#For a stash
-	ACCOUNT_STASH = 'accountStash'
+	ACCOUNT_STASH_TABS = 'accountStashTabs'
 
 	#For Tabs
 	STASH_TABS = 'stashTabs'
@@ -64,7 +67,8 @@ class DatabaseKeys(object):
 	STASH_TAB_NAME = 'stashTabName'
 
 	#For items
-	ITEMS = 'stashTabItems'
+	STASH_TAB_ITEMS = 'stashTabItems'
+
 	#<editor-fold desc="Item">
 	ITEM_NAME = 'itemName'
 	ITEM_ID = 'itemID'
@@ -73,8 +77,12 @@ class DatabaseKeys(object):
 	ITEM_ICON_URL = 'iconURL'
 	ITEM_LEAGUE = 'itemLeague'
 	ITEM_DESCRIPTION = 'itemDescription'
+	ITEM_PARENT_STASH_ID = 'itemParentStashID'
 	#</editor-fold">
 
+	#Database information
 	DATABASE_NAME = 'heroku_t80mf1rd'  #'POEGet'
 	ITEM_COLLECTION = 'items'
 	METADATA_COLLECTION = 'metadata'
+	ACCOUNT_COLLECTION = 'accounts'
+	STASH_TAB_COLLECTION = 'stashTabs'

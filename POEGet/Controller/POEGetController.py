@@ -5,12 +5,13 @@ import time
 
 from Util import Printing, CLEAN_STRING
 from Controller.JSONInterface import JSONInterface
-from Controller import CHANGE_ID_WAIT_TIME
+from Controller import CHANGE_ID_WAIT_TIME, REQUEST_FAIL_WAIT_TIME
 from Controller import JSONKeys
+from Controller import DBInterface
 from Model.Account import Account
 from Model.StashTab import StashTab
 from Model import DEFAULT_LEAGUE
-from Model.Item.Item import Item
+from Model.Item.BaseItem import BaseItem
 
 
 class POEGetController(object):
@@ -56,7 +57,11 @@ class POEGetController(object):
 			self._updateModel(stashes)
 
 			#Is there a duplicate change ID?
-			if JSONInterface.duplicateNextChangeID:
+			if stashes is None:
+				#Servers are goofed. Let's just wait.
+				Printing.INFOPRINT("Unable to contact server. Waiting {} seconds".format(REQUEST_FAIL_WAIT_TIME))
+				time.sleep(REQUEST_FAIL_WAIT_TIME)
+			elif JSONInterface.duplicateNextChangeID:
 				#We want to wait and try again later
 				Printing.INFOPRINT("Received duplicate NextChangeID. Waiting {} seconds".format(CHANGE_ID_WAIT_TIME))
 				time.sleep(CHANGE_ID_WAIT_TIME)
@@ -69,21 +74,26 @@ class POEGetController(object):
 
 	def _updateModel(self, stashes):
 		"""Update the model with some amount of stash information"""
+		#Did we get None?
+		if stashes is None:
+			#We've got nothing to do
+			return
+
 		Printing.INFOPRINT("Updating Model with new Payload")
 		for stashTab in stashes:
 			#We have a stash dictionary. Let's parse it out into relevant information
 			self._handleStashTab(stashTab)
 		Printing.INFOPRINT("Update Complete")
 
-	def _handleStashTab(self, stashTab):
+	def _handleStashTab(self, stashTabDictionary):
 		"""Handle getting all the relevant information from the stash"""
-		accountName = CLEAN_STRING(stashTab[JSONKeys.ACCOUNT_NAME])
-		stashTabID = stashTab[JSONKeys.STASH_ID]
-		items = stashTab[JSONKeys.ITEMS]
-		lastCharacterName = CLEAN_STRING(stashTab[JSONKeys.LAST_CHARACTER_NAME])
-		public = stashTab[JSONKeys.PUBLIC]
-		stashTabName = CLEAN_STRING(stashTab[JSONKeys.STASH])
-		stashTabType = stashTab[JSONKeys.STASH_TYPE]
+		accountName = CLEAN_STRING(stashTabDictionary[JSONKeys.ACCOUNT_NAME])
+		stashTabID = stashTabDictionary[JSONKeys.STASH_ID]
+		items = stashTabDictionary[JSONKeys.ITEMS]
+		lastCharacterName = CLEAN_STRING(stashTabDictionary[JSONKeys.LAST_CHARACTER_NAME])
+		public = stashTabDictionary[JSONKeys.PUBLIC]
+		stashTabName = CLEAN_STRING(stashTabDictionary[JSONKeys.STASH])
+		stashTabType = stashTabDictionary[JSONKeys.STASH_TYPE]
 
 		Printing.INFOPRINT("Received stash tab with ID: {}".format(stashTabID))
 
@@ -103,28 +113,47 @@ class POEGetController(object):
 			Printing.INFOPRINT("Adding new Stash Tab with ID: {}".format(stashTabID))
 			stashTab = StashTab(accountStash, stashTabID, stashTabName)
 
-		#Now we have a stash. Let's add it's items
-		for item in items:
-			self._handleItem(item, stashTab)
+		#Check to see if the database had items in it
+		previousItems = DBInterface.getAllStashItemIDs(stashTabID)
 
-	def _handleItem(self, item, parentStashTab):
+		#Now we have a stash. Let's add it's items
+		remainingItems = []
+		for item in items:
+			remainingItems = self._handleItem(item, stashTab, previousItems)
+
+		#We have some remaining items to remove from the stash tab
+		for itemID in remainingItems:
+			DBInterface.deleteItemByID(itemID)
+
+		#And now put this stash tab into the database
+		DBInterface.setStashTab(stashTab)
+
+	def _handleItem(self, itemDictionary, parentStashTab, previousItems):
 		"""Handle converting an item dictionary into an actual item object"""
-		name = item[JSONKeys.ITEM_NAME]
-		itemID = item[JSONKeys.ITEM_ID]
-		typeLine = item[JSONKeys.TYPE_LINE]
-		note = item.get(JSONKeys.NOTE, None)
-		iconURL = item[JSONKeys.ICON]
-		league = item.get(JSONKeys.LEAGUE, DEFAULT_LEAGUE)
-		description = item.get(JSONKeys.DESCRIPTION, None)
+		name = itemDictionary[JSONKeys.ITEM_NAME]
+		itemID = itemDictionary[JSONKeys.ITEM_ID]
+		typeLine = itemDictionary[JSONKeys.TYPE_LINE]
+		note = itemDictionary.get(JSONKeys.NOTE, None)
+		iconURL = itemDictionary[JSONKeys.ICON]
+		league = itemDictionary.get(JSONKeys.LEAGUE, DEFAULT_LEAGUE)
+		description = itemDictionary.get(JSONKeys.DESCRIPTION, None)
 
 		Printing.INFOPRINT("Received Item with ID: {}".format(itemID))
 
-		#Does this item already exist in our stash tab?
-		#TODO: Handle updating items!
-
 		#TODO: Handle more complicated items than just nothing
 		Printing.INFOPRINT("Creating new Item with ID {}".format(itemID))
-		item = Item(parentStashTab, name, itemID, typeLine, note, iconURL, league, description)
+		item = BaseItem(parentStashTab, name, itemID, typeLine, note, iconURL, league, description)
 		parentStashTab.items[itemID] = item
+
+		#Does this item already exist in our stash tab?
+		if item.itemID in previousItems:
+			#We don't need to remove it from the database
+			previousItems.remove(item.itemID)
+
+		#Add this item to the repo, and remove the old one if it is still there
+		DBInterface.setItem(item)
+
+		#And we return the list of items to remove from the stash
+		return previousItems
 
 	#</editor-fold>
