@@ -45,3 +45,6 @@ fabric.properties
 
 #Ignore all pyc
 *.pyc
+
+# Distribution / packaging
+env/

@@ -1,1 +1,0 @@
-@"T:\git\poeget\env\Scripts\python.exe" "T:\git\poeget\env\Scripts\markdown_py" %*
