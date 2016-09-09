@@ -185,7 +185,7 @@ class POEGetController(object):
 
 	def shutdown(self):
 		"""Ends the thread safely by setting the interface flag to false"""
-		
+
 		#We want to kill the thread
 		Printing.INFOPRINT("Killing JSON API Thread!")
 		POEGetController._interfacing = False
