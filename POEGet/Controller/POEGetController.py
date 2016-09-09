@@ -5,6 +5,7 @@ import time
 
 from POEGet.Util import Printing, CLEAN_STRING
 from POEGet.Controller.JSONInterface import JSONInterface
+from POEGet.Controller import JSON_THREAD_NAME
 from POEGet.Controller import CHANGE_ID_WAIT_TIME, REQUEST_FAIL_WAIT_TIME
 from POEGet.Controller import JSONKeys
 from POEGet.Controller import DBInterface
@@ -27,8 +28,14 @@ class POEGetController(object):
 		#We also want to have the actual model, as a dictionary of all accounts by name
 		self._accounts = {}
 
+		#Launch the thread
+		self._launchJSONInterfaceThread()
+
+	def _launchJSONInterfaceThread(self):
 		#Begin creating the model in another thread
-		self._jsonInterfaceThread = threading.Thread(target=self.jsonInterfaceThreadWorker)
+		self._jsonInterfaceThread = threading.Thread(target=self.jsonInterfaceThreadWorker, name=JSON_THREAD_NAME)
+		#self._jsonInterfaceThread.setDaemon(True)
+		Printing.INFOPRINT("Starting JSON API Thread.")
 		self._jsonInterfaceThread.start()
 
 	#<editor-fold desc="Properties">
@@ -46,7 +53,7 @@ class POEGetController(object):
 	#<editor-fold desc="JSONInterface">
 	def jsonInterfaceThreadWorker(self):
 		"""This is the entry point for the JSONInterface thread"""
-
+		Printing.INFOPRINT("JSON API Thread Started!")
 		#We want to constantly get items
 		while self._interfacing:
 
@@ -67,6 +74,7 @@ class POEGetController(object):
 				time.sleep(CHANGE_ID_WAIT_TIME)
 
 		#We're out of the loop, meaning we were told to stop going.
+		Printing.INFOPRINT("No longer interfacing with JSON API. Thread Stopping.")
 		return
 
 	def _updateDatabase(self, stashes):
@@ -81,8 +89,13 @@ class POEGetController(object):
 
 		Printing.INFOPRINT("Updating Model with new Payload")
 		for stashTab in stashes:
+			#Do we need to break early?
+			if not POEGetController._interfacing:
+				break
+
 			#We have a stash dictionary. Let's parse it out into relevant information
 			self._handleStashTab(stashTab)
+
 		Printing.INFOPRINT("Update Complete")
 
 	def _handleStashTab(self, stashTabDictionary):
@@ -119,10 +132,22 @@ class POEGetController(object):
 		#Now we have a stash. Let's add it's items
 		remainingItems = []
 		for item in items:
+
+			#Do we need to break early?
+			if not POEGetController._interfacing:
+				break
+
+			#Handle all the items in this stash tab
 			remainingItems = self._handleItem(item, stashTab, previousItems)
 
 		#We have some remaining items to remove from the stash tab
 		for itemID in remainingItems:
+
+			#Do we need to break early?
+			if not POEGetController._interfacing:
+				break
+
+			#Delete items we didn't add or modify
 			DBInterface.deleteItemByID(itemID)
 
 		#And now put this stash tab into the database
@@ -157,3 +182,10 @@ class POEGetController(object):
 		return previousItems
 
 	#</editor-fold>
+
+	def shutdown(self):
+		"""Ends the thread safely by setting the interface flag to false"""
+		
+		#We want to kill the thread
+		Printing.INFOPRINT("Killing JSON API Thread!")
+		POEGetController._interfacing = False

@@ -3,6 +3,9 @@ __author__ = 'Devin'
 API_BASE_URL = 'http://www.pathofexile.com/api/public-stash-tabs'
 DATABASE_URI = 'mongodb://dorblin7z7:thisispassword@ds019936.mlab.com:19936/heroku_t80mf1rd'
 
+#The names of our threads
+JSON_THREAD_NAME = "JSON_INTERFACE_THREAD"
+
 #The time to wait if we get a duplicate change id in seconds
 CHANGE_ID_WAIT_TIME = 5
 

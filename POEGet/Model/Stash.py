@@ -2,7 +2,7 @@ __author__ = 'Devin'
 
 from json import JSONEncoder
 
-from Controller import DatabaseKeys
+from POEGet.Controller import DatabaseKeys
 
 
 class Stash(JSONEncoder):
